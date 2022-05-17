@@ -1,25 +1,29 @@
-const userSchema = require('./index')
-const bcrypt = require('bcrypt')
+const userSchema = require("./index");
+const bcrypt = require("bcrypt");
+const checkUserByUsername = require("./checkUserByUsername");
 
 const createUser = async (username, password, userType) => {
-    try{
-        // check if the username already exist
-        const userAlreadyExist = await userSchema.find({username})
-        if(userAlreadyExist.length > 0) return {done: false, message: 'User already exist'}
+  try {
+    // check if the username already exist
+    const userAlreadyExist = await checkUserByUsername(username);
 
-        // hash the password
-        const hashed_Pass = await bcrypt.hash(password, 10)
+    if (userAlreadyExist.done && userAlreadyExist.exist)
+      return { done: false, message: "User already exist" };
+    else if (!userAlreadyExist.done)
+      throw { message: userAlreadyExist.message };
 
-        // create the user
-        const user = new userSchema({username, password: hashed_Pass, userType})
-        await user.save()
+    // hash the password
+    const hashed_Pass = await bcrypt.hash(password, 10);
 
-        // return the userId
-        return {done: true, userId: user._id}
-    }
-    catch(e){
-        return {done: false, message: e.message}
-    }
-}
+    // create the user
+    const user = new userSchema({ username, password: hashed_Pass, userType });
+    await user.save();
 
-module.exports = createUser
+    // return the userId
+    return { done: true, userId: user._id };
+  } catch (e) {
+    return { done: false, message: e.message };
+  }
+};
+
+module.exports = createUser;
