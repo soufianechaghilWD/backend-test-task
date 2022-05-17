@@ -17,7 +17,7 @@ const getCatalog = async (req, res) => {
 
     // check if the user is a buyer
     if (userType !== "buyer")
-      throw { message: "Only buyers can get the list of sellers", status: 401 };
+      throw { message: "Only buyers can get the catalog of a seller", status: 401 };
 
     // get the catalog
     const catalog = await catalogSchema.findOne({seller: seller_id}).populate({
