@@ -15,6 +15,8 @@ mongoose.connect("mongodb://localhost:27017/ecommerce");
 app.use(express.json())
 app.use(cors())
 app.use('/api', apiRouter)
+
+
 const port = process.env.PORT ||  4000 
 
-app.listen(port, () => console.log("App running on http://localhost:", port))
+app.listen(port, () => console.log(`App running on http://localhost:${port}`))

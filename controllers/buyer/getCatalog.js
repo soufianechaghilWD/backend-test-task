@@ -1,10 +1,10 @@
 const getUser = require("../../models/user/getUser");
-const catalogSchema = require('../../models/catalog')
-
+const catalogSchema = require("../../models/catalog");
+const handlingError = require("../handlingError");
 
 const getCatalog = async (req, res) => {
   const { username } = req.user;
-    const seller_id = req.params.seller_id
+  const seller_id = req.params.seller_id;
   try {
     // get the user
     const userResult = await getUser(username);
@@ -17,21 +17,23 @@ const getCatalog = async (req, res) => {
 
     // check if the user is a buyer
     if (userType !== "buyer")
-      throw { message: "Only buyers can get the catalog of a seller", status: 401 };
+      throw {
+        message: "Only buyers can get the catalog of a seller",
+        status: 401,
+      };
 
     // get the catalog
-    const catalog = await catalogSchema.findOne({seller: seller_id}).populate({
-        path: 'products',
-    })
+    const catalog = await catalogSchema
+      .findOne({ seller: seller_id })
+      .populate({
+        path: "products",
+      });
 
-    if(!catalog) res.status(200).json({message: "Seller has no catalogs"})
+    if (!catalog) res.status(200).json({ message: "Seller has no catalogs" });
 
-    res.status(200).json({catalog})
-
+    res.status(200).json({ catalog });
   } catch (e) {
-    res
-      .status(e.status || 400)
-      .json({ message: e.message || "Something went wrong" });
+    handlingError(res, e);
   }
 };
 

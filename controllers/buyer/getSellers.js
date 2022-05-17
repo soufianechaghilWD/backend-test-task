@@ -1,5 +1,6 @@
 const getUser = require("../../models/user/getUser");
 const retrieveSellers = require("../../models/user/retrieveSellers");
+const handlingError = require("../handlingError");
 
 const getSellers = async (req, res) => {
   const { username } = req.user;
@@ -11,28 +12,27 @@ const getSellers = async (req, res) => {
     // check if the user exist
     if (!userResult.user) throw { message: "User does not exist", status: 401 };
 
-    const { userType} = userResult?.user;
+    const { userType } = userResult?.user;
 
     // check if the user is a buyer
-    if(userType !== "buyer") throw({message: "Only buyers can get the list of sellers", status: 401})
+    if (userType !== "buyer")
+      throw { message: "Only buyers can get the list of sellers", status: 401 };
 
     // get all the sellers
-    const sellerResult = await retrieveSellers()
-    if(!sellerResult.done) throw({message: sellerResult.message})
+    const sellerResult = await retrieveSellers();
+    if (!sellerResult.done) throw { message: sellerResult.message };
 
-    res.status(200).json(sellerResult.sellers.map(seller => {
+    res.status(200).json(
+      sellerResult.sellers.map((seller) => {
         return {
-            id: seller?._id,
-            username: seller?.username,
-        }
-    }))
-
+          id: seller?._id,
+          username: seller?.username,
+        };
+      })
+    );
   } catch (e) {
-    res
-      .status(e.status || 400)
-      .json({ message: e.message || "Something went wrong" });
+    handlingError(res, e);
   }
 };
 
-
-module.exports = getSellers
+module.exports = getSellers;

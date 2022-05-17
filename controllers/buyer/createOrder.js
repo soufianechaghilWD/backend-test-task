@@ -1,16 +1,16 @@
-const orderSchema = require('../../models/order');
-const getUser = require('../../models/user/getUser');
+const orderSchema = require("../../models/order");
+const getUser = require("../../models/user/getUser");
+const handlingError = require("../handlingError");
 
 const createOrder = async (req, res) => {
   const { username } = req.user;
-  const { products } = req.body
-  const seller_id = req.params.seller_id
-
+  const { products } = req.body;
+  const seller_id = req.params.seller_id;
 
   try {
-
-    // check if there is no items 
-    if(products.length === 0) throw({message: "Can not make an order with no items"})
+    // check if there is no items
+    if (products.length === 0)
+      throw { message: "Can not make an order with no items" };
 
     // get the user
     const userResult = await getUser(username);
@@ -27,20 +27,19 @@ const createOrder = async (req, res) => {
 
     // make the order
     const Resultorder = new orderSchema({
-        buyer: _id,
-        seller: seller_id,
-        products: products
-    })
-    await Resultorder.save()
+      buyer: _id,
+      seller: seller_id,
+      products: products,
+    });
+    await Resultorder.save();
 
-    const order = await orderSchema.findOne({_id: Resultorder._id}).populate({path: "products"})
+    const order = await orderSchema
+      .findOne({ _id: Resultorder._id })
+      .populate({ path: "products" });
 
-    res.status(200).json(order)
-
+    res.status(200).json(order);
   } catch (e) {
-    res
-      .status(e.status || 400)
-      .json({ message: e.message || "Something went wrong" });
+    handlingError(res, e);
   }
 };
 

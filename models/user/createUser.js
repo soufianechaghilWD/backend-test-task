@@ -10,7 +10,7 @@ const createUser = async (username, password, userType) => {
     if (userAlreadyExist.done && userAlreadyExist.exist)
       return { done: false, message: "User already exist" };
     else if (!userAlreadyExist.done)
-      throw { message: userAlreadyExist.message };
+      return { done: false, message: userAlreadyExist.message };
 
     // hash the password
     const hashed_Pass = await bcrypt.hash(password, 10);

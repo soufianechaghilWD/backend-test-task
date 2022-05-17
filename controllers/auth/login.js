@@ -1,6 +1,7 @@
 const getUser = require("../../models/user/getUser");
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const handlingError = require("../handlingError");
 
 const login = async (req, res) => {
   const { username, password } = req.body;
@@ -27,10 +28,8 @@ const login = async (req, res) => {
 
     res.status(200).json({ token });
   } catch (e) {
-    res
-      .status(e.status || 400)
-      .json({ message: e.message || "Something went wrong" });
+    handlingError(res, e);
   }
 };
 
-module.exports = login
+module.exports = login;

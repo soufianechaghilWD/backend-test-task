@@ -1,7 +1,8 @@
 const SellerHasCatalogs = require("../../models/catalog/sellerHasCatalog");
 const getUser = require("../../models/user/getUser");
-const productSchema = require('../../models/product')
-const catalogSchema = require('../../models/catalog')
+const productSchema = require("../../models/product");
+const catalogSchema = require("../../models/catalog");
+const handlingError = require("../handlingError");
 
 const createCatalog = async (req, res) => {
   const { username } = req.user;
@@ -41,11 +42,8 @@ const createCatalog = async (req, res) => {
     // return the catalog
     res.status(200).json({ catalog });
   } catch (e) {
-    res
-      .status(e.status || 400)
-      .json({ message: e.message || "Something went wrong" });
+    handlingError(res, e);
   }
 };
 
-
-module.exports = createCatalog
+module.exports = createCatalog;

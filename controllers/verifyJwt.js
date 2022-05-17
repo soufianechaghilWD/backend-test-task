@@ -13,7 +13,7 @@ module.exports.Verify = async (req, res, next) => {
   jwt.verify(token, "JwtSecret", (err, decode) => {
     if (err) return res.status(401).json({ message: "Invalid token" });
 
-    req.user = decode
+    req.user = decode;
     next();
   });
 };

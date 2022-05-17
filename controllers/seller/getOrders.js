@@ -1,5 +1,6 @@
 const getUser = require("../../models/user/getUser");
-const orderSchema = require('../../models/order')
+const orderSchema = require("../../models/order");
+const handlingError = require("../handlingError");
 
 const getOrders = async (req, res) => {
   const { username } = req.user;
@@ -18,14 +19,16 @@ const getOrders = async (req, res) => {
       throw { message: "A buyer can not get the orders", status: 401 };
 
     // get the orders
-    const orders = await orderSchema.find({seller: _id}).populate({path: "products"}).populate({path: "buyer"})
-    if(orders.length === 0) res.status(200).json({message: "You have no orders"})
+    const orders = await orderSchema
+      .find({ seller: _id })
+      .populate({ path: "products" })
+      .populate({ path: "buyer" });
+    if (orders.length === 0)
+      res.status(200).json({ message: "You have no orders" });
 
-    res.status(200).json({orders})
+    res.status(200).json({ orders });
   } catch (e) {
-    res
-      .status(e.status || 400)
-      .json({ message: e.message || "Something went wrong" });
+    handlingError(res, e);
   }
 };
 
