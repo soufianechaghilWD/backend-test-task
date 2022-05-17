@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors')
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const userController = require('./controllers/user');
 
 
 const app = express()
@@ -11,7 +12,9 @@ mongoose.connect("mongodb://localhost:27017/ecommerce");
 
 
 // middlewares
+app.use(express.json())
 app.use(cors())
+app.use(userController)
 
 const port = process.env.PORT ||  4000 
 
