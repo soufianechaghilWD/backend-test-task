@@ -1,0 +1,1 @@
+** You need to have node and mongoDb installed
